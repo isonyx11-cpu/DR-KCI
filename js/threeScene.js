@@ -18,7 +18,7 @@ class LaboratoryScene {
 
     initEngine() {
         this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x030811, 0.015);
+        this.scene.fog = new THREE.FogExp2(0x181A20, 0.015);
 
         this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.camera.position.z = 30;
@@ -26,7 +26,7 @@ class LaboratoryScene {
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.setClearColor(0x030811, 1);
+        this.renderer.setClearColor(0x181A20, 1);
         this.container.appendChild(this.renderer.domElement);
 
         this.mouseX = 0;
@@ -34,16 +34,16 @@ class LaboratoryScene {
     }
 
     createLighting() {
-        const ambientLight = new THREE.AmbientLight(0x07111F, 1.5);
+        const ambientLight = new THREE.AmbientLight(0x23262F, 1.5);
         this.scene.add(ambientLight);
 
-        this.pointLightEmerald = new THREE.PointLight(0x00C896, 3, 50);
-        this.pointLightEmerald.position.set(15, 10, 10);
-        this.scene.add(this.pointLightEmerald);
+        this.pointLightAccent = new THREE.PointLight(0xB6FF2E, 3, 50);
+        this.pointLightAccent.position.set(15, 10, 10);
+        this.scene.add(this.pointLightAccent);
 
-        this.pointLightCyan = new THREE.PointLight(0x00E5FF, 2, 50);
-        this.pointLightCyan.position.set(-15, -10, 5);
-        this.scene.add(this.pointLightCyan);
+        this.pointLightWhite = new THREE.PointLight(0xF8F7F4, 1.5, 50);
+        this.pointLightWhite.position.set(-15, -10, 5);
+        this.scene.add(this.pointLightWhite);
     }
 
     createDnaHelix() {
@@ -54,24 +54,24 @@ class LaboratoryScene {
 
         const sphereGeometry = new THREE.SphereGeometry(0.2, 16, 16);
         const lineGeometry = new THREE.CylinderGeometry(0.04, 0.04, 1, 8);
-        const emeraldMaterial = new THREE.MeshPhongMaterial({ color: 0x00C896, emissive: 0x003311, shininess: 30 });
-        const cyanMaterial = new THREE.MeshPhongMaterial({ color: 0x00E5FF, emissive: 0x002233, shininess: 30 });
+        const accentMaterial = new THREE.MeshPhongMaterial({ color: 0xB6FF2E, shininess: 30 });
+        const whiteMaterial = new THREE.MeshPhongMaterial({ color: 0xF8F7F4, shininess: 30 });
 
         for (let i = 0; i < totalNodes; i++) {
             const alpha = (i / totalNodes) * Math.PI * 4;
             const yPosition = (i - (totalNodes / 2)) * strandSpacing;
 
             const x1 = Math.cos(alpha) * radius; const z1 = Math.sin(alpha) * radius;
-            const node1 = new THREE.Mesh(sphereGeometry, emeraldMaterial);
+            const node1 = new THREE.Mesh(sphereGeometry, accentMaterial);
             node1.position.set(x1, yPosition, z1);
             this.dnaGroup.add(node1);
 
             const x2 = Math.cos(alpha + Math.PI) * radius; const z2 = Math.sin(alpha + Math.PI) * radius;
-            const node2 = new THREE.Mesh(sphereGeometry, cyanMaterial);
+            const node2 = new THREE.Mesh(sphereGeometry, whiteMaterial);
             node2.position.set(x2, yPosition, z2);
             this.dnaGroup.add(node2);
 
-            const rungMesh = new THREE.Mesh(lineGeometry, new THREE.MeshPhongMaterial({ color: 0x2D3748, transparent: true, opacity: 0.4 }));
+            const rungMesh = new THREE.Mesh(lineGeometry, new THREE.MeshPhongMaterial({ color: 0xF8F7F4, transparent: true, opacity: 0.15 }));
             rungMesh.position.set((x1 + x2) / 2, yPosition, (z1 + z2) / 2);
             rungMesh.scale.y = radius * 2;
             rungMesh.rotation.z = alpha;
@@ -89,12 +89,12 @@ class LaboratoryScene {
             const capGeom = new THREE.SphereGeometry(0.6, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
             const bodyGeom = new THREE.CylinderGeometry(0.6, 0.6, 1.2, 16, 1, true);
 
-            const greenMat = new THREE.MeshPhongMaterial({ color: 0x00C896, shininess: 40 });
-            const whiteMat = new THREE.MeshPhongMaterial({ color: 0xFFFFFF, shininess: 40 });
+            const limeMat = new THREE.MeshPhongMaterial({ color: 0xB6FF2E, shininess: 40 });
+            const darkMat = new THREE.MeshPhongMaterial({ color: 0x23262F, shininess: 40 });
 
-            const top = new THREE.Mesh(capGeom, greenMat); top.position.y = 0.6;
-            const bottom = new THREE.Mesh(capGeom, whiteMat); bottom.rotation.x = Math.PI; bottom.position.y = -0.6;
-            const body = new THREE.Mesh(bodyGeom, greenMat);
+            const top = new THREE.Mesh(capGeom, limeMat); top.position.y = 0.6;
+            const bottom = new THREE.Mesh(capGeom, darkMat); bottom.rotation.x = Math.PI; bottom.position.y = -0.6;
+            const body = new THREE.Mesh(bodyGeom, limeMat);
 
             group.add(top, bottom, body);
             group.position.set((Math.random() - 0.5) * 35, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 15);
@@ -113,7 +113,7 @@ class LaboratoryScene {
         for (let i = 0; i < particleCount * 3; i++) { positions[i] = (Math.random() - 0.5) * 50; }
         geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-        this.particleCloud = new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0x00E5FF, size: 0.15, transparent: true, opacity: 0.6 }));
+        this.particleCloud = new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xB6FF2E, size: 0.15, transparent: true, opacity: 0.4 }));
         this.scene.add(this.particleCloud);
     }
 
