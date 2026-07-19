@@ -4,7 +4,6 @@
 
 class MotionOrchestrator {
     constructor() {
-        this.initLenisScroll();
         this.initTypewriter();
         this.initCustomCursor();
         this.initViewportScrollReveals();
@@ -13,10 +12,12 @@ class MotionOrchestrator {
     }
 
     initLenisScroll() {
+        // Init smooth layout management directly when landing overlay safely detaches
         this.lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smooth: true
+            smooth: true,
+            infinite: false
         });
 
         const renderLoop = (time) => {
@@ -33,10 +34,9 @@ class MotionOrchestrator {
         new Typed('#typed-pharmacy-strings', {
             strings: [
                 'Student Pharmacist.',
-                'Clinical Pharmacy Enthusiast.',
-                'Community Health Advocate.',
-                'Drug Information Researcher.',
-                'Learning Web Development.'
+                'Industrial Operations Candidate.',
+                'Clinical Dashboard Designer.',
+                'Healthcare Frontend Engineer.'
             ],
             typeSpeed: 50,
             backSpeed: 30,
@@ -54,16 +54,17 @@ class MotionOrchestrator {
             cursor.style.top = `${e.clientY}px`;
         });
 
-        const standardLinks = document.querySelectorAll('a, button, input, textarea');
+        // Track interactives including download targets
+        const standardLinks = document.querySelectorAll('a, button, input, textarea, .file-download-trigger');
         standardLinks.forEach(link => {
             link.addEventListener('mouseenter', () => {
                 gsap.to(cursor, { scale: 1.8, duration: 0.2 });
                 cursor.style.background = 'transparent';
-                cursor.style.border = '1px solid var(--accent-cyan)';
+                cursor.style.border = '1px solid var(--primary-accent)';
             });
             link.addEventListener('mouseleave', () => {
                 gsap.to(cursor, { scale: 1, duration: 0.2 });
-                cursor.style.background = 'radial-gradient(circle, var(--accent-cyan) 0%, rgba(0,200,150,0.4) 100%)';
+                cursor.style.background = 'radial-gradient(circle, var(--primary-accent) 0%, rgba(182,255,46,0.3) 100%)';
                 cursor.style.border = 'none';
             });
         });
@@ -71,7 +72,6 @@ class MotionOrchestrator {
 
     initViewportScrollReveals() {
         const revealElements = document.querySelectorAll('[data-gsap]');
-        
         const observerOptions = { root: null, threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
 
         const revealObserver = new IntersectionObserver((entries) => {
@@ -103,7 +103,7 @@ class MotionOrchestrator {
 
             gsap.to(trackingObject, {
                 value: boundaryTarget,
-                duration: 2,
+                duration: 1.5,
                 onUpdate: () => { counter.textContent = Math.floor(trackingObject.value); }
             });
         });
@@ -135,15 +135,15 @@ class MotionOrchestrator {
 
             submitBtn.disabled = true;
             submitBtn.textContent = "Transmitting...";
-            feedback.style.color = "var(--accent-cyan)";
-            feedback.textContent = "Processing secure laboratory messaging request vector...";
+            feedback.style.color = "var(--primary-accent)";
+            feedback.textContent = "Delivering secure packet matrix...";
 
             setTimeout(() => {
-                submitBtn.textContent = "Sent Confirmed";
-                feedback.style.color = "var(--primary-emerald)";
-                feedback.textContent = "Data packet safely logged inside Dr. Isaac's clinical queue.";
+                submitBtn.textContent = "Transmission Logged";
+                feedback.style.color = "var(--text-main)";
+                feedback.textContent = "Message routed successfully to Dr. Isaac's console.";
                 form.reset();
-            }, 1500);
+            }, 1200);
         });
     }
 }
